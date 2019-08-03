@@ -7,9 +7,11 @@ let expresshbs = require('express-handlebars')
 let db=require('./dbconfig/db-connect')
 let session=require('express-session')
 var indexRouter = require('./routes/index');
-let passport=require('passport')
 let flash=require('connect-flash')
 let userRouter=require('./routes/user')
+let passport=require('passport')
+let initializePassport=require('./config/passport')
+initializePassport(passport)
 var app = express();
 
 // view engine setup
