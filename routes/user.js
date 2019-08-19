@@ -33,7 +33,7 @@ router.post('/signin',function (req,res) {
         if(data){
             console.log(data)
             if(bcrypt.compareSync(password,data.password)){
-                res.redirect('/user/profile')
+                res.redirect('/USER/profile')
             }
             else{
                 res.end('Password mismatch')
@@ -45,6 +45,6 @@ router.post('/signin',function (req,res) {
     });
 });
 router.get('/profile',function(err,res){
-    res.render('user/profile',);
+    res.render('USER/profile',);
 })
 module.exports = router;
