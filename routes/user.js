@@ -3,16 +3,24 @@ let bcrypt=require('bcrypt-nodejs');
 var router = express.Router();
 let dbConfig=require('../dbconfig/db-connect')
 
-/*var csrf=require('csurf');
+var csrf=require('csurf');
 let csrfProtection=csrf();
-router.use(csrfProtection);*/
+router.use(csrfProtection);
+
+router.get('/profile',isLoggedIn,function(err,res,next){
+    res.render('user/profile');
+})
+router.get('/',NotLoggedIn,function(req,res,next){
+   next()
+
+})
 router.get('/signup',function (req,res) {
 
-    res.render('USER/signup',{csrfToken:req.csrfToken});
+    res.render('user/signup',{csrfToken:req.csrfToken});
 });
 router.get('/signin',function (req,res) {
 
-    res.render('USER/signin',{csrfToken:req.csrfToken});
+    res.render('user/signin',{csrfToken:req.csrfToken});
 });
 router.post('/signup',function (req,res){
 
@@ -33,18 +41,34 @@ router.post('/signin',function (req,res) {
         if(data){
             console.log(data)
             if(bcrypt.compareSync(password,data.password)){
-                res.redirect('/USER/profile')
+                res.redirect('/user/profile')
             }
             else{
                 res.end('Password mismatch')
             }
         }
         else{
-            res.end('Username or password mismatch')
+            res.end('username or password mismatch')
         }
     });
 });
-router.get('/profile',function(err,res){
-    res.render('USER/profile',);
+router.get('/logout',function(req,res,next){
+   req.logout()
+        res.redirect('/')
+
 })
+
+
 module.exports = router;
+function isLoggedIn(req,res,next) {
+    if (req.isAuthenticated()){
+        return next
+     }
+ res.redirect('/')
+  }
+function NotLoggedIn(req,res,next) {
+    if (req.isAuthenticated()){
+        return next
+    }
+    res.redirect('/')
+}

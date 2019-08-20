@@ -3,19 +3,20 @@
 //}
 
 
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var createError = require('http-errors')
+var express = require('express')
+var path = require('path')
+var cookieParser = require('cookie-parser')
+var logger = require('morgan')
 let expresshbs = require('express-handlebars')
 let db=require('./dbconfig/db-connect')
 let session=require('express-session')
-var indexRouter = require('./routes/index');
+var indexRouter = require('./routes/index')
 let flash=require('connect-flash')
 let userRouter=require('./routes/user')
-var app = express();
-let validator= require('express-validator')
+let app = express();
+var passport=require('passport');
+
 
 // view engine setup
 app.engine('.hbs',expresshbs({defaultLayout:'layout',extname:'.hbs'}))
@@ -25,10 +26,16 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(session({secret:'mysecret',resave: false,saveUninitialized:false}))
-app.use(validator())
-app.use(flash())
+app.use(session({
+  secret:'mysecret'
+    ,resave: false,
+    saveUninitialized:false}))
 
+app.use(flash())
+app.use(passport.initialize())
+app.use(passport.session())
+
+require('./config/passport');
 
 app.use(express.static(path.join(__dirname, 'public')));
 
